@@ -21,9 +21,11 @@ def dbLoad(dates: list, strip: bool = False, cols: list = ["source", "document_t
         fData = json_normalize(rData["response"]["docs"])
 
         if strip:
-            fData = removeColumns(fData, cols)
+            fData = fData[cols]
+            # fData = base.removeColumns(fData, cols)
 
         print("Dataframe " + date + " loaded succesfully")
+        fData['month'] = date
         df.append(fData)
         # except:
         #     raise Warning("File " + date + ext + " couldn't be loaded")
@@ -40,13 +42,8 @@ def getCompactCompletePath(year):
 def compactSave(db: pd.DataFrame, year: int):
     print("saving data in a compactsave")
     filepathComplete = getCompactCompletePath(year)
-    print(filepathComplete)
-    file = open(filepathComplete, 'w')
-    file.write(db.to_json())
-    file.close()
-
+    db.to_csv(filepathComplete, index=None, sep=';', mode='w', header=True)
 
 def compactLoad(year: int):
-    file = open( os.path.join(base.getPath('dbC'), year + '.txt'), 'r')
-    text = file.readlines()
-    return pd.read_json(text)
+    db = pd.read_csv(getCompactCompletePath(year), sep=';', index_col=None)
+    return db

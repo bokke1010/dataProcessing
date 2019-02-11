@@ -1,14 +1,19 @@
-import base
+import base, dbInteraction
 
 import pandas as pd
-from pandas.io.json import json_normalize
-import matplotlib.pyplot, os.path, json
+import matplotlib.pyplot
 
-months = 12
+def plotYear(year, byCol: str):
+    df = dbInteraction.compactLoad(year)
+    # print("Dataframe loaded from cpSave:\n" + str(df))
+    df.boxplot(column=["word_count"], by=byCol, rot=-90, figsize=(12,9), fontsize=9, showfliers = False)
+    matplotlib.pyplot.show()
 
-def plotYear(year):
-    dates = base.dates(year,months)
-    df = base.getYear(dates, True)
-    df = base.intify(df, "word_count")
-    df.boxplot(column=["word_count"], by="type_of_material", rot=-90, figsize=(12,9), fontsize=9)
+def plotYears(yearS, yearE, byCol: str):
+    a = []
+    for year in range(yearS, yearE+1):
+        a.append(dbInteraction.compactLoad(year))
+    df = pd.concat(a)
+    # print("Dataframe loaded from cpSave:\n" + str(df))
+    df.boxplot(column=["word_count"], by=byCol, rot=-90, figsize=(12,9), fontsize=9, showfliers = False)
     matplotlib.pyplot.show()

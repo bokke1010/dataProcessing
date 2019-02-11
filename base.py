@@ -1,10 +1,15 @@
 import pandas as pd
 import os.path
 
-def dates(year: int, months: int = 12) -> list:
+monthStrs = ["01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12"]
+
+def dates(year: int, extended: bool = True, months: int = 12) -> list:
     rt = []
     for month in range(months):
-        rt.append(str(year) + "-" + str(month+1))
+        if extended:
+            rt.append(str(year) + "-" + monthStrs[month])
+        else:
+            rt.append(str(year) + "-" + str(month+1))
     return rt
 
 def getPath(folder: str = 'db'):

@@ -15,9 +15,13 @@ def dbLoad(dates: list, strip: bool = False, cols: list = ["source", "document_t
         # try:
         file_path = os.path.join(base_path, date)
         # Read file
-        with open(file_path + ext) as data_file:
-            rData = json.load(data_file)
-
+        rData = None
+        try:
+            with open(file_path + ext) as data_file:
+                rData = json.load(data_file)
+        except:
+            print("File " + date + " not loaded")
+            break
         fData = json_normalize(rData["response"]["docs"])
 
         if strip:
@@ -34,7 +38,8 @@ def dbLoad(dates: list, strip: bool = False, cols: list = ["source", "document_t
         dfComplete = pd.concat(df, sort=True)
         return dfComplete.reset_index()
     else:
-        raise IndexError("No matching files found")
+        print("ERROR")
+        # raise Warning("No matching files found in dates " + str(dates) + "   " + ext)
 
 def getCompactCompletePath(year):
     return os.path.join(base.getPath('dbC'), str(year) + '.txt')
